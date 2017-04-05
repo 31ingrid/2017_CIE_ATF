@@ -2,9 +2,9 @@ EXEC = atf
 ARGS = -nox -iprint 50 
 
 ifeq ($(SAFE),FALSE)
-	DIST = ../../src/build/release/
+	DIST = ../src/build/release/
 else
-	DIST = ../../src/build/debug/
+	DIST = ../src/build/debug/
 endif
 
 ifdef ComSpec
@@ -19,7 +19,7 @@ $(EXEC): $(DIST)$(EXEC).tpl
 	ln -sf $(DIST)$(EXEC) $@
 
 $(DIST)$(EXEC).tpl:
-	$(MAKE) --directory=../../src
+	$(MAKE) --directory=../src
 
 run: $(EXEC)
 	./$(EXEC) $(ARGS)
