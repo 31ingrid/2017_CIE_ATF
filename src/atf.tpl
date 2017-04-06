@@ -12,34 +12,36 @@
 
 DATA_SECTION
 !!CLASS ofstream evalout("atf_2016_1b.mcmc.out");       
+  init_adstring input_datafile;
   int debug;
 	!! debug=0;
   init_int styr         //(1) start year of model  
-  !!cout<<"styr"<<styr<<std::endl;
+  !!COUT(styr);
   init_int endyr        //(2) end year 
-  !!cout<<"endyr"<<endyr<<std::endl;
+  !!COUT(endyr);
   init_int styr_fut     //(3) start year of projections (endyr+1) 
-  !!cout<<"styr_fut"<<styr_fut<<std::endl; 
+  !!COUT(styr_fut);
   init_int endyr_fut    //(4) end year of projections   
-  !!cout<<"endyr_fut"<<endyr_fut<<std::endl; 
-  init_int nsurv   //(5)     
-  !!cout<<"nsurv"<<nsurv<<std::endl;
-  init_number median_rec  //(6) median recruit value to use for the last 3 years  
-  !!cout<<"median_rec"<<median_rec<<std::endl;
-  init_int first_age //(7) first age to use    
-  !!cout<<"first_age"<<first_age<<std::endl; 
-  init_int last_age //(8)    
-  !!cout<<"last_age"<<last_age<<std::endl;
-  init_int first_length//8.1 first length to use
-  init_int last_length//8.2 last length to use (for the GOA there are 21 lengths, for BSAI there are 25) for 3-15+ only first was not used previously
-  !!cout<<"last_length"<<last_length<<std::endl;
-  init_int nages_read//(8.3) number of ages read    
-  !!cout<<"nages_read"<<nages_read<<std::endl;
+  !!COUT(endyr_fut);
+  init_int nsurv        //(5)     
+  !!COUT(nsurv);
+  init_number median_rec //(6) median recruit value to use for the last 3 years  
+  !!COUT(median_rec);
+  init_int first_age     //(7) first age to use    
+  !!COUT(first_age); 
+  init_int last_age     //(8)    
+  !!COUT(last_age); 
+  init_int first_length //8.1 first length to use
+  init_int last_length  //8.2 last length to use (for the GOA there are 21 lengths, for BSAI there are 25) for 3-15+ only first was not used previously
+  !!COUT(last_length); 
+  init_int nages_read   //(8.3) number of ages read    
+  !!COUT(nages_read); 
   int nages;      
   !! nages=last_age-first_age+1;          // # of ages in the model  
-  !!cout<<"nages"<<nages<<std::endl;
-  init_int nsurv_aged //(9) 
-  !!cout<<"nsurv_aged"<<nsurv_aged<<std::endl;    
+  !!COUT(nages);
+  init_int nsurv_aged  //(9) 
+  !!COUT(nsurv_aged);
+
  //phases
   init_int phase_F40      //(10) phase F40 is estimated 
   init_ivector phase_logistic_sel(1,2*nsurv) //(11)  
@@ -47,7 +49,7 @@ DATA_SECTION
   init_int phase_alphabeta //(13) phase to estimate alpha and beta
   init_ivector q_Phase(1,nsurv); //(14)  
   init_int phase_selcoffs      //(15) generally set to phase 4 phase for smooth selectivity curve fishery
-  !!cout<<"phase_selcoffs"<<phase_selcoffs<<std::endl;         
+  !!COUT(phase_selcoffs);         
  //selectivity parameters 
   init_int nselages       //(16) fishery (for asymptotic selectivity) set to 19 selectivity is set to the selectivity at nselages-1 after age nselages
   init_ivector nselages_srv(1,nsurv) //(17)
@@ -58,16 +60,16 @@ DATA_SECTION
   init_vector fishsel_prior_f(1,2);//(22) fishsel_prior_f 
   init_vector fishsel_prior_m(1,2);//(23) fishsel_prior_m 
   init_ivector nsel_params(1,nsurv);//(24) number of selectivity parameters for each survey (either 2 or 4)
-  !!cout<<"nsel_params"<<nsel_params<<std::endl;
+  !!COUT(nsel_params);
   init_vector sel_prior_f(1,2*nsurv);//(25) sel_prior_f  
-  !!cout<<"sel_prior_f"<<sel_prior_f<<std::endl;
+  !!COUT(sel_prior_f);
   init_vector sel_prior_m(1,2*nsurv);//(26) sel_prior_m
-  !!cout<<"sel_prior_f"<<sel_prior_f<<std::endl;
+  !!COUT(sel_prior_f);
   init_vector sel_LB_f(1,2*nsurv);//(27)   
   init_vector sel_LB_m(1,2*nsurv);//(28)   
   init_vector sel_UB_f(1,2*nsurv);//(29)   
   init_vector sel_UB_m(1,2*nsurv);//(30) 
-  !!cout<<"max(nsel_params)"<<max(nsel_params)<<std::endl;     
+  !!COUT(nsel_params);     
  //parameters below are for the descending logistic of the shelf survey (srv1) for the BSAI survey. I just leave them in for the GOA survey but they are not used.
   init_vector sel1_desc_prior_f(1,2);//(31)
   init_vector sel1_desc_prior_m(1,2);//(32)
@@ -75,80 +77,86 @@ DATA_SECTION
   init_vector sel1_desc_LB_m(1,2);//(34)
   init_vector sel1_desc_UB_f(1,2);//(35)
   init_vector sel1_desc_UB_m(1,2);//(36) 
-  !!cout<<"sel1_desc_UB_m"<<sel1_desc_UB_m<<std::endl; 
+  !!COUT(sel1_desc_UB_m);
 
  //sample size for length comps for weighting likelihoods  
   init_int nlen             //(37) # of length bins
+	// Open datafile 
+	!! ad_comm::change_datafile_name(input_datafile); 
+	!! cout << "+----------------------+" << endl;
+	!! cout << "| Reading data file    |" << endl;
+	!! cout << "+----------------------+" << endl;
+
   init_int nobs_fish          //(38) # of years of fishery data
   init_ivector yrs_fish(1,nobs_fish)   //(39) years with fishery data 
-  !!cout<<"yrs_fish"<<yrs_fish<<std::endl; 
+  !!COUT(yrs_fish); 
   init_matrix nsamples_fish(1,2,1,nobs_fish)  //(40) sample size (weights) for each sex and yr of fishery data
-  !!cout<<"nsamples_fish"<<nsamples_fish<<std::endl;
+  !!COUT(nsamples_fish);
   init_ivector nobs_srv(1,nsurv) //(41) # yrs of shelf, slope, AI data
-  !!cout<<"nobs_srv"<<nobs_srv<<std::endl;
+  !!COUT(nobs_srv);
   init_imatrix yrs_srv(1,nsurv,1,nobs_srv) //(42) yrs with shelf, slope, AI survey data
-  !!cout<<"yrs_srv"<<yrs_srv<<std::endl; 
+  !!COUT(yrs_srv); 
   init_ivector nobs_srv_length(1,nsurv) //(43)     
-  !!cout<<"nobs_srv_length"<<nobs_srv_length<<std::endl;  
+  !!COUT(nobs_srv_length);  
   init_imatrix yrs_srv_length(1,nsurv,1,nobs_srv_length) //(44) yrs with shelf, slope, AI length data
-  !!cout<<"yrs_srv_length"<<yrs_srv_length<<std::endl;
+  !!COUT(yrs_srv_length);
   init_imatrix nsamples_srv_length_fem(1,nsurv,1,nobs_srv_length)   //(45) sample sizes for each length comp by sex and year for shelf, slope, AI survey  
   init_imatrix nsamples_srv_length_mal(1,nsurv,1,nobs_srv_length)   //(46)   
   init_3darray obs_p_fish(1,2,1,nobs_fish,1,nlen)  //(48) fishery length comps 
-  !!cout<<"obs_p_fish1"<<obs_p_fish(1)<<std::endl; 
-  !!cout<<"obs_p_fish2"<<obs_p_fish(2)<<std::endl;  
+  !!COUT(obs_p_fish(1)); 
+  !!COUT(obs_p_fish(2));  
   init_3darray obs_p_srv_length_fem(1,nsurv,1,nobs_srv_length,1,nlen)  //(49) survey length comps by survey (shelf, slope, AI, bin, sex and yr)
   init_3darray obs_p_srv_length_mal(1,nsurv,1,nobs_srv_length,1,nlen)  //(50) 
   init_vector catch_bio(styr,endyr)    //(51) catch by year 
-  !!cout<<"catch_bio"<<catch_bio<<std::endl; 
+  !!COUT(catch_bio); 
   init_imatrix obs_srv(1,nsurv,1,nobs_srv) //(52) survey biomass by year (shelf, slope, AI)
-  !!cout<<"obs_srv"<<obs_srv<<std::endl;
+  !!COUT(obs_srv);
   init_imatrix obs_srv_sd(1,nsurv,1,nobs_srv) //(53) survey SE by year    
   init_matrix wt(1,2,1,nages)          //(54) weight-at-age by sex   
-  !!cout<<"wt"<<wt<<std::endl;
+  !!COUT(wt);
   init_vector maturity(1,nages)        //(55) female prop. mature-at-age
-  !!cout<<"maturity"<<maturity<<std::endl;
+  !!COUT(maturity);
   //length age transition matrix 
   //goa: need length age transition matrix with 21 ages and 21 length bins
   init_3darray lenage(1,2,1,nages,1,nlen)  //(56) length-age conversion matrix
-  !!cout<<"lenage"<<lenage<<std::endl; 
+  !!COUT(lenage); 
   int nyrs_temps;   
   !! nyrs_temps = nobs_srv(1); //this for BSAI assessment and 33 for 2015 GOA
-  !!cout<<"nyrs_temps"<<nyrs_temps<<std::endl;   
+  !!COUT(nyrs_temps);   
   init_vector bottom_temps(1,nyrs_temps); //nobs_srv(1))    //(57) shelf survey bottom temperatures
-  !!cout<<"nyrs_temps"<<nyrs_temps<<std::endl;
+  !!COUT(nyrs_temps);
   init_int monot_sel;     //(58) selectivity smoothing function for fishery 
-  !!cout<<"monot_sel"<<monot_sel<<std::endl;
+  !!COUT(monot_sel);
   init_vector wt_like(1,8);    //(59) 
-  !!cout<<"wt_like"<<wt_like<<std::endl;               
+  !!COUT(wt_like);               
   init_ivector nobs_srv_age(1,nsurv_aged); //(60) # yrs with survey ages 
   init_imatrix yrs_srv_age(1,nsurv_aged,1,nobs_srv_age); //(61) yrs of shelf, ai survey ages
   init_3darray nsamples_srv_age(1,nsurv_aged,1,2,1,nobs_srv_age); //(62) sample sizes of ages read each year by sex and survey
   init_3darray obs_p_srv_age_fem(1,nsurv_aged,1,nobs_srv_age,1,nages); //(63) survey age comps by sex and year females  
   init_3darray obs_p_srv_age_mal(1,nsurv_aged,1,nobs_srv_age,1,nages); //(64) survey age comps by sex and year males   
-  !!cout<<"obs_p_srv_age_fem"<<obs_p_srv_age_fem<<std::endl;
+  !!COUT(obs_p_srv_age_fem);
   init_vector M(1,2); //(65) female then male natural mortality
-  !!cout<<"M"<<M<<std::endl;          
+  !!COUT(M);          
   init_number offset_const; //(66) a constant to offset zero values
   init_vector q_Lower_bound(1,nsurv); //(67)
   init_vector q_Upper_bound(1,nsurv); //(68)  
 
   init_vector q_surv_prior_mean(1,nsurv);  //(69) 
   init_ivector nparams_srv(1,nsurv); //(70) this tells you whether you have 2 or 4 parameters for each survey
-  !!cout<<"q_surv_prior_mean"<<q_surv_prior_mean<<std::endl;
+  !!COUT(q_surv_prior_mean);
   init_int assess;  //(71)   
-  !!cout<<"assess"<<assess<<std::endl;                    
+  !!COUT(assess);                    
   init_int mean_log_rec_prior; //(72)   
-  !!cout<<"mean_log_rec_prior"<<mean_log_rec_prior<<std::endl; 
+  !!COUT(mean_log_rec_prior); 
   init_int log_avg_fmort_prior; //(73) 
-  !!cout<<"log_avg_fmort_prior"<<log_avg_fmort_prior<<std::endl;                                                                          
+  !!COUT(log_avg_fmort_prior);                                                                          
   init_vector like_wght(1,5)    //(74)     
-  !!cout<<"like_wght"<<like_wght<<std::endl;
+  !!COUT(like_wght);
   init_vector fpen_mult(1,2) //(75) 
   init_number catch_err;//(76)   
-  !!cout<<"catch_err"<<catch_err<<std::endl;      
-  !!cout<<"fpen_mult"<<fpen_mult<<std::endl; 
-  !!cout<<"sel_prior_f(1,1)"<<sel_prior_f(1,1)<<std::endl;  
+  !!COUT(catch_err);      
+  !!COUT(fpen_mult); 
+  !!COUT(sel_prior_f);  
   int styr_rec;
   int catch_err_like;   
   matrix cv_srv(1,nsurv,1,nobs_srv);  //matrix to hold CVs for surveys
@@ -167,20 +175,26 @@ DATA_SECTION
  LOCAL_CALCS
    styr_rec=styr-nages+1;
    if(nselages>nages) 
-   {nselages=nages;  
-   cout<<"Warning selectivity: is set to be estimated on more ages than are in the model."<<std::endl;  }
+   {
+		 nselages=nages;  
+     cout<<"Warning selectivity: is set to be estimated on more ages than are in the model."<<std::endl;  
+	 }
    for (i=1; i<= nsurv; i++){
-   if(nselages_srv(i)>nages) nselages_srv(i)=nages;
+     if(nselages_srv(i)>nages) nselages_srv(i)=nages;
    }
    //calculate cv for surveys
-   for (int j=1;j<=nsurv;j++){
-   for (i=1;i<=nobs_srv(j);i++){ 
-   cv_srv(j,i)=obs_srv_sd(j,i)/(double)obs_srv(j,i); }} 
+   for (int j=1;j<=nsurv;j++)
+	 {
+     for (i=1;i<=nobs_srv(j);i++)
+		 { 
+       cv_srv(j,i)=obs_srv_sd(j,i)/(double)obs_srv(j,i); 
+		 }
+  } 
+
    //change weights to tons
    wt=wt*.001;
    catch_err_like=.5/(catch_err*catch_err); 
-   cout<<"catch_err_like"<<catch_err_like<<std::endl;  
-
+   COUT(catch_err_like);  
 
  END_CALCS
    
@@ -547,6 +561,7 @@ FUNCTION dvar_vector get_sel(const dvariable& slp, const dvariable& a50, const d
   }          
 
 FUNCTION get_mortality 
+  // WARNING
   maxsel_fish=max(sel(1));     //1 is females
   if(maxsel_fish<max(sel(2)))  //if highest female selectivity is > male selectivity, make maxsel_fish=male high selectivity
       maxsel_fish=max(sel(2));
@@ -563,6 +578,7 @@ FUNCTION get_mortality
   S = mfexp(-1.0*Z); 
 
 FUNCTION get_numbers_at_age
+  // WARNING...why is this in here twice???
   maxsel_fish=max(sel(1));   
   if(maxsel_fish<max(sel(2)))//if females greater than males, then set the max to the females.
     maxsel_fish=max(sel(2)); //set max to whichever sex is larger
@@ -1161,7 +1177,21 @@ REPORT_SECTION
  
 RUNTIME_SECTION
   maximum_function_evaluations 8000
-  convergence_criteria 1e-4 1e-4 1e-5 1e-6
+  convergence_criteria 1e-0 1e-2 1e-5 1e-6
+
+
+GLOBALS_SECTION
+	#include <admodel.h>
+	#include <time.h>
+  adstring input_datafile;
+	// adstring like_names;
+	 /**
+  	 * \def COUT(object)
+  	 * Prints object to screen during runtime.
+  	 * cout <<setw(6) << setprecision(3) << setfixed() << x << endl;
+  	**/
+ 	#undef COUT
+	#define COUT(object) cout << #object <<"\n" << object << endl;
 
 TOP_OF_MAIN_SECTION
   arrmblsize = 20000000;
