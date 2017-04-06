@@ -12,6 +12,8 @@
 
 DATA_SECTION
 !!CLASS ofstream evalout("atf_2016_1b.mcmc.out");       
+  int debug;
+	!! debug=0;
   init_int styr         //(1) start year of model  
   !!cout<<"styr"<<styr<<std::endl;
   init_int endyr        //(2) end year 
@@ -881,7 +883,7 @@ FUNCTION evaluate_the_objective_function
   {   
   surv_like(i) = norm2(elem_div(log(obs_srv(i))-log(pred_srv(i)(yrs_srv(i))),sqrt(2)*cv_srv(i)));   //yrs_srv(i) is an index here.
   }      
-  cout<<"surv_like"<<surv_like<<std::endl;
+  if (debug) cout<<"surv_like"<<surv_like<<std::endl;
 //Sept 18 2015 come back to this - this below seems very strange.
 //  double var_tmp; for (i=1;i<=nobs_srv(3);i++) { var_tmp = 2.*square(log(obs_srv(3,i))*cv_srv(3,i)); surv_like(3) += square(log(obs_srv(3,i)+.01)-log(pred_srv(3,yrs_srv(3,i))+.01))/var_tmp; }
    
@@ -907,14 +909,13 @@ FUNCTION evaluate_the_objective_function
         sel_like(3)+=wt_like(6)*square(log_sel_fish(2,j)-log_sel_fish(2,j+1));  //monotonicity constraing fishery males
     }
    } 
-    obj_fun+=1.*sum(sel_like);    
+    obj_fun += sum(sel_like);    
+    obj_fun += square(avgsel_fish(1));
+    obj_fun += square(avgsel_fish(2));  
+    obj_fun += square(avgsel_srv2(1));
+    obj_fun += square(avgsel_srv2(2));
 
-    obj_fun+=1.*square(avgsel_fish(1));
-    obj_fun+=1.*square(avgsel_fish(2));  
-    obj_fun+=1.*square(avgsel_srv2(1));
-    obj_fun+=1.*square(avgsel_srv2(2));
-
- cout<<"avgsel_fish"<<avgsel_fish<<std::endl; 
+    if (debug) cout<<"avgsel_fish"<<avgsel_fish<<std::endl; 
 
   } //end if active(log_selcoffs_fish)
 
@@ -935,20 +936,22 @@ FUNCTION evaluate_the_objective_function
       fpen+=fpen_mult(2)*norm2(fmort_dev);    //0.01 for BSAI and 1 for GOA
     }
  
-// cout<<"rec_like"<<rec_like<<std::endl;
-// cout<<"length_like"<<length_like<<std::endl;
-// cout<<"surv_like"<<surv_like<<std::endl;
-// cout<<"catch_like"<<catch_like<<std::endl; 
-// cout<<"like_wght"<<like_wght<<std::endl;
-//  cout<<"fpen"<<fpen<<std::endl; 
-//  cout<<"sprpen"<<sprpen<<std::endl; 
+	if (debug){
+		cout<<"rec_like"    <<rec_like		<<endl;
+	  cout<<"length_like" <<length_like	<<endl;
+	  cout<<"surv_like"   <<surv_like		<<endl;
+	  cout<<"catch_like"  <<catch_like	<<endl; 
+	  cout<<"like_wght"   <<like_wght		<<endl;
+	  cout<<"fpen"        <<fpen  		  <<endl; 
+	  cout<<"sprpen"      <<sprpen  		<<endl; 
+	}
   obj_fun += rec_like;
-  obj_fun += 1.*length_like(1);    //this is fishery length likelihood     
-  obj_fun += 1.*length_like(2);//survey lenght like   
-  obj_fun += 1.*length_like(3);//survey lenght like   
-  obj_fun += 1.*length_like(4);//survey lenght like   
+  obj_fun += length_like(1);    //this is fishery length likelihood     
+  obj_fun += length_like(2);//survey lenght like   
+  obj_fun += length_like(3);//survey lenght like   
+  obj_fun += length_like(4);//survey lenght like   
 
-  obj_fun+= 1.*sum(age_like); 
+  obj_fun += sum(age_like); 
   obj_fun += like_wght(1)*surv_like(1);    //1 is shelf 2 is slope 3 is AI    
   obj_fun += like_wght(2)*surv_like(2);
   obj_fun += like_wght(3)*surv_like(3);
