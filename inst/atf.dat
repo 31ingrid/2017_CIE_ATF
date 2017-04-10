@@ -82,7 +82,7 @@ atf_2017.dat
 5. 10.
 #(30) srv1, srv2, srv3 sel_UB_m         #IS Apr4 2017   .5 to 5
 5 4.7 #.5 12.
-5 8.0 #.5 12.
+6 8.0 #.5 12.
 5 6.0 #.5 12.  
 #(31) sel1_desc_prior_f    #31-36 are for the descending logistic of the shelf survey (srv1) for the BSAI survey. I just leave them in for the GOA survey  
 #.8 4.  
@@ -94,7 +94,7 @@ atf_2017.dat
 #(34) sel1_desc_LB_m 
 .01 1.
 #(35) sel1_desc_UB_f
-5. 10. 
+5. 15. 
 #(36) sel1_desc_UB_m 
 5. 12.     
 #(37) nlen number of length bins        

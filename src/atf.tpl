@@ -554,7 +554,7 @@ FUNCTION dvar_vector get_sel(const dvariable& slp, const dvariable& a50, const d
 	dvar_vector sel_tmp(1,nages);
    for (j=1;j<=nages;j++)  //this is selectivity for the surveys         
    {
-	  sel_tmp(j) = 1./(1.+mfexp(-1.*slp*(double(j)-a50)));           
+	    sel_tmp(j)  = 1./(1.+mfexp(-1.*slp*(double(j)-a50)));           
       sel_tmp(j) *= 1./(1.+mfexp(dslp*(double(j)-d50)));
    }
  	return(sel_tmp);
@@ -586,8 +586,7 @@ FUNCTION get_numbers_at_age
   for(i=1;i<=nsurv;i++)
   {
    maxsel_srv(i)=max(sel_srv(1,i));
-   if(maxsel_srv(i)<max(sel_srv(2,i)))
-   maxsel_srv(i)=max(sel_srv(2,i));
+   // WARNING Commented out since may be impossible to be true if(maxsel_srv(i)<max(sel_srv(2,i))) maxsel_srv(i)=max(sel_srv(2,i));
   }     
 
   int itmp;
@@ -655,26 +654,27 @@ FUNCTION get_numbers_at_age
   pred_srv(j,i)=0.;
   //catchability calculation for survey years
   if (assess==1 && (i>=1982) && (i-1981 <= nobs_srv(1)))      //JNI catchability calculation for survey years    
-   {   
-   qtime(i)=q_surv(1)*mfexp(-alpha+beta*bottom_temps(i-1981));
-   }
+  {   
+    qtime(i)=q_surv(1)*mfexp(-alpha+beta*bottom_temps(i-1981));
+  }
   for(k=1;k<=2;k++)
     {
     if (j==1 && assess==1)
-      {             
-    pred_srv(j,i) += qtime(i)*(natage(k,i)*elem_prod(sel_srv(k,j)/maxsel_srv(j),wt(k)));maxsel_srv(j);   //shelf survey, dividing by the maxsel constrains female selectivity to be 1.0  took out april 3 2017 
-      } 
+    {             
+      pred_srv(j,i) += qtime(i)*(natage(k,i)*elem_prod(sel_srv(k,j)/maxsel_srv(j),wt(k)));
+			maxsel_srv(j);   //shelf survey, dividing by the maxsel constrains female selectivity to be 1.0  took out april 3 2017 
+    } 
     else 
-      {
-    pred_srv(j,i) += q_surv(j)*(natage(k,i)*elem_prod(sel_srv(k,j),wt(k)));///maxsel_srv(j);         //slope survey JNI  do not need to divide by maxsel_srv if it is logistic but does not hurt
-      } 
+    {
+      pred_srv(j,i) += q_surv(j)*(natage(k,i)*elem_prod(sel_srv(k,j),wt(k)));///maxsel_srv(j);         //slope survey JNI  do not need to divide by maxsel_srv if it is logistic but does not hurt
+    } 
      
        //Aleutian Islands survey JNI
 
     //next line used to fix q1 to 1.0 - problem is if you start from a bin file, even if the bounds
     // are set different in the tpl file the program will take to value from the bin file and use that 
-    explbiom(i)+=natage(k,i)*elem_prod(sel(k),wt(k))/maxsel_fish;
-    pred_bio(i)+=natage(k,i)*wt(k);
+    explbiom(i) += natage(k,i)*elem_prod(sel(k),wt(k))/maxsel_fish;
+    pred_bio(i) += natage(k,i)*wt(k);
       }
    }  
  }     
@@ -850,8 +850,8 @@ FUNCTION evaluate_the_objective_function
 
   if (active(rec_dev))
   {
-  length_like.initialize();
-  int ii;
+    length_like.initialize();
+    int ii;
     //recruitment likelihood - norm2 is sum of square values   
     rec_like = norm2(rec_dev);    //I think the rec_devs are standard normal which is why the variance is 1...in this lognormal likelihood.
    
@@ -877,19 +877,19 @@ FUNCTION evaluate_the_objective_function
 	   length_like(i+1)-=((nsamples_srv_length_fem(i,j)*(offset_const+obs_p_srv_length_fem(i,j))*log(pred_p_srv_len_fem(i,j)+offset_const))
 	                      +(nsamples_srv_length_mal(i,j)*(offset_const+obs_p_srv_length_mal(i,j))*log(pred_p_srv_len_mal(i,j)+offset_const)));
 	 } 
-	  length_like(i+1)-=offset(i+1); 
+	    length_like(i+1)-=offset(i+1); 
     } 
  
 //survey age composition fitting 
-  for (i=1;i<=nsurv_aged;i++)
-  {
-	for (j=1;j<=nobs_srv_age(i);j++)
-	{
-   age_like(i)-=nsamples_srv_age(i,1,j)*(offset_const+obs_p_srv_age_fem(i,j))*log(pred_p_srv_age_fem(i,j)+offset_const)+
-                  nsamples_srv_age(i,2,j)*(offset_const+obs_p_srv_age_mal(i,j))*log(pred_p_srv_age_mal(i,j)+offset_const); 	
-	}	
-	age_like(i)-=offset(i+nsurv+1);
-  }
+    for (i=1;i<=nsurv_aged;i++)
+    {
+	    for (j=1;j<=nobs_srv_age(i);j++)
+	    {
+       age_like(i)-=nsamples_srv_age(i,1,j)*(offset_const+obs_p_srv_age_fem(i,j))*log(pred_p_srv_age_fem(i,j)+offset_const)+
+                      nsamples_srv_age(i,2,j)*(offset_const+obs_p_srv_age_mal(i,j))*log(pred_p_srv_age_mal(i,j)+offset_const); 	
+	    }	
+	    age_like(i)-=offset(i+nsurv+1);
+    }
   //end of if(active (rec_dev))
   }
   // Fit to indices (lognormal)  
@@ -930,6 +930,7 @@ FUNCTION evaluate_the_objective_function
     obj_fun += square(avgsel_fish(2));  
     obj_fun += square(avgsel_srv2(1));
     obj_fun += square(avgsel_srv2(2));
+    obj_fun += sexr_like;
 
     if (debug) cout<<"avgsel_fish"<<avgsel_fish<<std::endl; 
 
@@ -987,8 +988,8 @@ REPORT_SECTION
   report << "Mort_est_mal"<<endl<<F(2)<<endl; 
   report << "Fishsel_fem"<<endl<<sel(1)/maxsel_fish<<endl; 
   report << "Fishsel_mal"<<endl<<sel(2)/maxsel_fish<<endl; 
-  report << "Survsel_fem"<<endl<<sel_srv(1)/maxsel_srv(1)<<endl; 
-  report << "Survsel_mal"<<endl<<sel_srv(2)/maxsel_srv(1)<<endl; 
+  report << "Survsel_fem"<<endl<<sel_srv(1)<<endl;// /maxsel_srv(1)<<endl; 
+  report << "Survsel_mal"<<endl<<sel_srv(2)<<endl;// /maxsel_srv(1)<<endl; 
   report << "Obs_srv_biomass"<<endl<<obs_srv<<endl; 
   report << "Pred_srv_biomass"<<endl<<pred_srv<<endl;
   report << "obs_srv_sd" <<endl <<obs_srv_sd<<endl;  

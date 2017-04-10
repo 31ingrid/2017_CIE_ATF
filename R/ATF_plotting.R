@@ -25,10 +25,22 @@ legend("bottomright",c("Model 15_0","Model 15_1b"),col=c("black","red"),lwd=4,ce
 
 #table of recruitments
 cbind(seq(1976,2016,1,),ATF$Numbers_fem[,1],ATF$Numbers_fem[,1])
+plot(ATF$obs_mean_sexr,ATF$pred_sexr)
+ATF$obs_mean_sexr
+ATF$pred_sexr
 
 #selectivity 2016
 par(mar=c(1,6,2,2))
 par(mfrow=c(2,2),mar=c(5,4,2,2),cex.lab=1.2,cex.main=1.2)
+plot(c(1:21),ATF$Fishsel_fem,col="red",lwd=3,type="l",xlab="Age",ylab="Proportion selected",main="Fishery selectivity",ylim=c(0,1))
+lines(c(1:21),ATF$Fishsel_mal,col="blue",lwd=3,lty=3,xlab="Age",ylab="Proportion selected",ylim=c(0,1))
+plot(c(1:21),ATF$Survsel_fem[1,],col="red",lwd=3,type="l",xlab="Age",ylab="Proportion selected",main="Shelf Survey selectivity",ylim=c(0,1))
+lines(c(1:21),ATF$Survsel_mal[1,],col="blue",lwd=3,lty=3,xlab="Age",ylab="Proportion selected",ylim=c(0,1))
+plot(c(1:21),ATF$Survsel_fem[2,],col="red",lwd=3,type="l",xlab="Age",ylab="Proportion selected",main="Slope Survey selectivity",ylim=c(0,1))
+lines(c(1:21),ATF$Survsel_mal[2,],col="blue",lwd=3,lty=3,xlab="Age",ylab="Proportion selected",ylim=c(0,1))
+plot(c(1:21),ATF$Survsel_fem[3,],col="red",lwd=3,type="l",xlab="Age",ylab="Proportion selected",main="AI Survey selectivity",ylim=c(0,1))
+lines(c(1:21),ATF$Survsel_mal[3,],col="blue",lwd=3,lty=3,xlab="Age",ylab="Proportion selected",ylim=c(0,1))
+
 plot(c(1:21),ATF$Fishsel_fem/max(ATF$Fishsel_fem),col="red",lwd=3,type="l",xlab="Age",ylab="Proportion selected",main="Fishery selectivity",ylim=c(0,1))
 lines(c(1:21),ATF$Fishsel_mal/max(ATF$Fishsel_mal),col="blue",lwd=3,lty=3,xlab="Age",ylab="Proportion selected",ylim=c(0,1))
 plot(c(1:21),ATF$Survsel_fem[1,]/max(ATF$Survsel_fem[1,]),col="red",lwd=3,type="l",xlab="Age",ylab="Proportion selected",main="Shelf Survey selectivity",ylim=c(0,1))
