@@ -25,7 +25,7 @@ run: $(EXEC)
 	./$(EXEC) $(ARGS)
 
 plot:
-	R CMD BATCH plot.R
+	R CMD BATCH ..\R\ATF_plotting.R
 
 both: $(EXEC)
 	./$(EXEC) $(ARGS)
