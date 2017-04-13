@@ -563,7 +563,7 @@ FUNCTION dvar_vector get_sel(const dvariable& slp, const dvariable& a50, const d
 FUNCTION get_mortality 
   // WARNING
   maxsel_fish=max(sel(1));     //1 is females
-  if(maxsel_fish<max(sel(2)))  //if highest female selectivity is > male selectivity, make maxsel_fish=male high selectivity
+  if(maxsel_fish<max(sel(2)))  //if highest female selectivity is < male selectivity, make maxsel_fish=male high selectivity
       maxsel_fish=max(sel(2));
 
   fmort = mfexp(log_avg_fmort+fmort_dev); 
@@ -579,9 +579,9 @@ FUNCTION get_mortality
 
 FUNCTION get_numbers_at_age
   // WARNING...why is this in here twice???
-  maxsel_fish=max(sel(1));   
-  if(maxsel_fish<max(sel(2)))//if females greater than males, then set the max to the females.
-    maxsel_fish=max(sel(2)); //set max to whichever sex is larger
+ // maxsel_fish=max(sel(1));   
+ // if(maxsel_fish<max(sel(2)))//if females greater than males, then set the max to the females.
+ //   maxsel_fish=max(sel(2)); //set max to whichever sex is larger
 
   for(i=1;i<=nsurv;i++)
   {
@@ -977,7 +977,8 @@ FUNCTION evaluate_the_objective_function
   obj_fun += sprpen;   
   
 
-REPORT_SECTION     
+REPORT_SECTION
+  save_gradients(gradients);     
   report << "Styr" << endl<<styr<<endl;  
   report << "Endyr" << endl<<endyr<<endl;  
   report << "Numbers_fem" << endl<<natage(1)<<endl;
