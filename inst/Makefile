@@ -1,4 +1,8 @@
-EXEC = atf
+ifeq ($(KAM),TRUE)
+  EXEC = kam
+else
+  EXEC = atf
+endif
 ARGS = -nox -iprint 50 
 
 ifeq ($(SAFE),FALSE)
@@ -13,7 +17,7 @@ else
     RM=rm -rf
 endif
 
-all: both
+all: run
 
 $(EXEC): $(DIST)$(EXEC).tpl
 	ln -sf $(DIST)$(EXEC) $@
